@@ -2,8 +2,10 @@ package com.penglecode.xmodule.fabric.bankmaster.chaincode;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.penglecode.xmodule.fabric.bankmaster.Entity.DeleteEntity;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.InsertEntity;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.SelectEntity;
+import com.penglecode.xmodule.fabric.bankmaster.Entity.UpdateEntity;
 import com.penglecode.xmodule.fabric.common.util.JsonUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
@@ -24,10 +26,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 public class BankMasterChaincode extends   ChaincodeBase {
 
     //表名和id的映射集合
@@ -53,6 +53,12 @@ public class BankMasterChaincode extends   ChaincodeBase {
                } else  if(sqlClass == SelectEntity.class){
                    SelectEntity selectEntity = (SelectEntity) sqlClass.newInstance();
                    select(stub,selectEntity);
+               }else  if(sqlClass == DeleteEntity.class) {
+                   DeleteEntity deleteEntity = (DeleteEntity) sqlClass.newInstance();
+                   delete(stub, deleteEntity);
+               }else  if(sqlClass == UpdateEntity.class) {
+                   UpdateEntity updateEntity = (UpdateEntity) sqlClass.newInstance();
+                   update(stub, updateEntity);
                }
             } catch (JSQLParserException | InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
@@ -206,16 +212,15 @@ public class BankMasterChaincode extends   ChaincodeBase {
             String idIndex = tableName + docId;
             tableNameToId.put(tableName, tableNameToId.get(tableName) + 1);
             stub.putStringState(idIndex,jsonParams);
-            return newSuccessResponse(String.format("数据插入成功"));
+            return newSuccessResponse("数据插入成功");
     }
-    public   Response delete(ChaincodeStub stub,String tableName,Map whereFields){
+    public   Response delete(ChaincodeStub stub, DeleteEntity deleteEntity){
         SelectEntity selectEntity = new SelectEntity();
-        selectEntity.setTableName(tableName);
-        selectEntity.setWhereFields(whereFields);
-        selectEntity.setSelectFields(null);
-        String bytes = String.valueOf(select(stub,selectEntity).getPayload());
+        selectEntity.setTableName(deleteEntity.getTableName());
+        selectEntity.setWhereFields(deleteEntity.getWhereFields());
+        String bytes = Arrays.toString(select(stub, selectEntity).getPayload());
         JSONArray jsonArray = JSONArray.parseArray(bytes);
-        String id = tableName+jsonArray.getJSONObject(0).getString("id");
+        String id = deleteEntity.getTableName()+jsonArray.getJSONObject(0).getString("id");
         stub.delState(id);
         return  newSuccessResponse("数据删除成功");
     }
@@ -230,37 +235,40 @@ public class BankMasterChaincode extends   ChaincodeBase {
             Map.Entry<Object, Object> entry = entries.next();
             queryString  = queryString +  ",\""+entry.getKey()+"\":\""+entry.getValue()+"\"";
         }
-        if (selectFields!= null){
-            queryString = queryString + "}, \"Fields\":["+selectFields.get(0)+"\"";
-            for(int i= 1;i<selectFields.size();i++){
-                queryString = queryString + ",\""+selectFields.get(i)+"\"";
+        if (selectFields!= null ){
+            if(selectFields.get(0)!="*") {
+                queryString = queryString + "}, \"Fields\":[" + selectFields.get(0) + "\"";
+                for (int i = 1; i < selectFields.size(); i++) {
+                    queryString = queryString + ",\"" + selectFields.get(i) + "\"";
+                }
+                queryString = queryString + "]}";
             }
-            queryString =queryString+"]}";
+        } else {
+            queryString = queryString+"}";
         }
         byte[] bytes = getQueryResultForQueryString(stub, queryString);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(bytes));
-        JSONArray returnAaaray = new JSONArray();
+        JSONArray returnArrray = new JSONArray();
         for(int i =0;i<jsonArray.size();i++){
             JSONObject jsonObject = (JSONObject) jsonArray.getJSONObject(i).remove("docType");
-            returnAaaray.add(jsonObject);
+            returnArrray.add(jsonObject);
         }
-        return newSuccessResponse("success",returnAaaray.toJSONString().getBytes());
+        return newSuccessResponse("success",returnArrray.toJSONString().getBytes());
     }
-    public  Response update(ChaincodeStub stub,String tableName,Map updateFields,Map whereFields){
+    public  Response update(ChaincodeStub stub, UpdateEntity updateEntity){
         SelectEntity selectEntity = new SelectEntity();
-        selectEntity.setTableName(tableName);
-        selectEntity.setSelectFields(null);
-        selectEntity.setWhereFields(updateFields);
+        selectEntity.setTableName(updateEntity.getTableName());
+        selectEntity.setWhereFields(updateEntity.getWhereFields());
         String bytes = String.valueOf(select(stub,selectEntity).getPayload());
         JSONArray jsonArray = JSONArray.parseArray(bytes);
         JSONObject jsonObject = jsonArray.getJSONObject(0);
-        Iterator<Map.Entry<Object, Object>> entries2 = whereFields.entrySet().iterator();
+        Iterator<Map.Entry<Object, Object>> entries2 = updateEntity.getSetFields().entrySet().iterator();
         while (entries2.hasNext()) {
             Map.Entry<Object, Object> entry = entries2.next();
             jsonObject.put(String.valueOf(entry.getKey()),entry.getValue());
         }
-        String id = jsonObject.getString("id");
-        stub.putStringState(tableName+id,String.valueOf(jsonObject));
+        String id = updateEntity.getTableName()+jsonObject.getString("id");
+        stub.putStringState(id,String.valueOf(jsonObject));
          return  newSuccessResponse("success");
     }
     public byte[] getQueryResultForQueryString(ChaincodeStub stub, String queryString) {
