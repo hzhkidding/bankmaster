@@ -1,3 +1,4 @@
+/*
 package com.penglecode.xmodule.fabric.bankmaster.chaincode;
 
 import com.alibaba.fastjson.JSONArray;
@@ -18,7 +19,6 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
-import org.junit.Test;
 
 import java.util.*;
 
@@ -48,7 +48,6 @@ public class Test2 {
         // byte[] bytes = getQueryResultForQueryString(stub, queryString);
         //return newSuccessResponse(String.valueOf(bytes));
     }
-    @Test
     public static void main(String[] args) throws JSQLParserException {
         String string = new String("[{\"name\":\"Michael\",\"age\":24},{\"name\":\"Michael\",\"age\":\"25\"}]");
         JSONArray jsonArray = JSONArray.parseArray(string);
@@ -108,7 +107,8 @@ public class Test2 {
         if (sqlTypeClass == Update.class){
 
         }
-       /* Select select = (Select) CCJSqlParserUtil.parse(sql);
+       */
+/* Select select = (Select) CCJSqlParserUtil.parse(sql);
         SelectBody selectBody = select.getSelectBody();
         PlainSelect plainSelect = (PlainSelect)selectBody;
 
@@ -139,7 +139,8 @@ public class Test2 {
            System.out.println("Table:"+((Column)equalsTo.getLeftExpression()).getTable());
            System.out.println("Field:"+((Column)equalsTo.getLeftExpression()).getColumnName());
            System.out.println("equal:"+equalsTo.getRightExpression());
-       }*/
+       }*//*
+
         String s = jsonArray.getJSONObject(1).getString("age");
         int test = jsonArray.getJSONObject(1).getInteger("age");
         JSONObject jsonObject3 = new JSONObject();
@@ -173,3 +174,4 @@ public class Test2 {
        // new Test2().select(sqlEntity);
     }
 }
+*/

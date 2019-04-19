@@ -1,5 +1,7 @@
 package com.penglecode.xmodule.fabric.bankmaster.Entity;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.Map;
 
 public class InsertEntity {
@@ -11,15 +13,20 @@ public class InsertEntity {
         this.tableName = tableName;
     }
 
-    public Map<String, String> getParams() {
-        return params;
-    }
 
-    public void setParams(Map<String, String> params) {
-        this.params = params;
-    }
+
+
 
     private  String tableName;
-    private Map<String,String> params;
+
+    public JSONObject getJsonParams() {
+        return jsonParams;
+    }
+
+    public void setJsonParams(JSONObject jsonParams) {
+        this.jsonParams = jsonParams;
+    }
+
+    private JSONObject jsonParams;
 
 }

@@ -1,12 +1,16 @@
 package com.penglecode.xmodule.fabric.bankmaster.chaincode;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.primitives.Bytes;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.DeleteEntity;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.InsertEntity;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.SelectEntity;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.UpdateEntity;
 import com.penglecode.xmodule.fabric.common.util.JsonUtils;
+import com.penglecode.xmodule.fabric.common.util.SqlUtils;
+import com.sun.corba.se.impl.ior.ByteBuffer;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
@@ -22,10 +26,12 @@ import org.hyperledger.fabric.shim.ChaincodeBase;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.KeyValue;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class BankMasterChaincode extends   ChaincodeBase {
@@ -36,131 +42,209 @@ public class BankMasterChaincode extends   ChaincodeBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(BankMasterChaincode.class);
 
     @Override
-    public Response init(ChaincodeStub chaincodeStub) {
-        return null;
+    public Response init(ChaincodeStub stub) {
+        List<String> parameters = stub.getParameters();
+        return newSuccessResponse("初始化智能合约成功!");
+
+
     }
 
     @Override
     public Response invoke(ChaincodeStub stub) {
         String function = stub.getFunction();
         List<String> args = stub.getParameters();
-        if(args.size() == 2){
+
+        String sql = "insert into table_name (name,id,age) VALUES (?, ?, 主机)";
+        String sql2 = "select id age from table_name where id=哈哈 and name =3";
+        String params =  "{\"1\":\"3\",\"2\":\"哈哈\"}";
+        args.add(0,sql2);
+        args.add(1,params);
+        String reponse = null;
+
+
             try {
-               Class<?> sqlClass =  sqlParser(args.get(0),args.get(1)).getClass();
-               if(sqlClass == InsertEntity.class){
-                   InsertEntity insertEntity = (InsertEntity) sqlClass.newInstance();
+
+                Object object = SqlUtils.sqlParser(args.get(0),args.get(1));
+
+               if(object.getClass() == InsertEntity.class){
+
+                   InsertEntity insertEntity = (InsertEntity) object;
                    insert(stub,insertEntity);
-               } else  if(sqlClass == SelectEntity.class){
-                   SelectEntity selectEntity = (SelectEntity) sqlClass.newInstance();
-                   select(stub,selectEntity);
-               }else  if(sqlClass == DeleteEntity.class) {
-                   DeleteEntity deleteEntity = (DeleteEntity) sqlClass.newInstance();
-                   delete(stub, deleteEntity);
-               }else  if(sqlClass == UpdateEntity.class) {
-                   UpdateEntity updateEntity = (UpdateEntity) sqlClass.newInstance();
-                   update(stub, updateEntity);
+               } else  if(object.getClass() == SelectEntity.class){
+                   SelectEntity selectEntity = (SelectEntity) object;
+                  reponse =  select(stub,selectEntity);
+
+               }else  if(object.getClass() == DeleteEntity.class) {
+                   DeleteEntity deleteEntity = (DeleteEntity)object;
+                 //  delete(stub, deleteEntity);
+               }else  if(object.getClass() == UpdateEntity.class) {
+                   UpdateEntity updateEntity = (UpdateEntity) object;
+                  // update(stub, updateEntity);
                }
-            } catch (JSQLParserException | InstantiationException | IllegalAccessException e) {
+            } catch (JSQLParserException e) {
                 e.printStackTrace();
             }
-        }
+
         LOGGER.info(">>> 调用智能合约开始，function = {}, args = {}", function, args);
-        Response response = null;
-        return  newSuccessResponse("成功");
+        //return  newSuccessResponse(stub.getStringState("table_name0"));
+        return  newSuccessResponse("哈哈哈哈",reponse.getBytes( StandardCharsets.UTF_8));
+
     }
-    @Test
+   @Test
     public void test() throws JSQLParserException {
         String sql = "insert into table_name (name,id,age) VALUES (?, ?, 主机)";
-        String sql2 = "select id name from teacher where id=? and name =?";
+        String sql2 = "select id age from table_name where id=哈哈 and name =3";
         String params =  "{\"1\":\"3\",\"2\":\"哈哈\"}";
-        Object object = sqlParser(sql2,params);
+        Object object = SqlUtils.sqlParser(sql,params);
 
         if(object.getClass() == InsertEntity.class){
             InsertEntity insertEntity = (InsertEntity) object;
+            System.out.println(insertEntity.getJsonParams().toJSONString());
             System.out.println(insertEntity.getTableName()+"sadfsadfasdfds");
             //insert(stub,insertEntity);
         } else  if(object.getClass() == SelectEntity.class){
             SelectEntity selectEntity = (SelectEntity) object;
             System.out.println(selectEntity.getTableName()+"dsfadsfadsfasd");
+            select2(selectEntity);
         }
     }
 
-    /**
-     * //sql解析
-     * @param sql
-     * @param params
-     * @return  object (sqlEntity)
-     * @throws JSQLParserException
-     */
 
-    public  Object sqlParser(String sql,String params) throws JSQLParserException {
-         /*sql = "insert into table_name (name,id,age) VALUES (?, ?, 主机)";
-        params = "{\"1\":\"3\",\"2\":\"哈哈\"}";*/
-        Map mapParams = new HashMap();
-        com.alibaba.fastjson.JSONObject jsonParams = (com.alibaba.fastjson.JSONObject) com.alibaba.fastjson.JSONObject.parse(params);
-        StringBuffer preSql = new StringBuffer(sql);
-        StringBuffer endSql = new StringBuffer();
-        for(int i =0,index =1 ;i<preSql.length();i++){
-            if(preSql.charAt(i) == '?'){
-                endSql.append(jsonParams.getString(String.valueOf(index)));
-                //  System.out.println(jsonParams.getString(String.valueOf(index)).getClass());
-                index++;
-            }
-            else  endSql.append(preSql.charAt(i));
+
+    public Response insert(ChaincodeStub stub, InsertEntity insertEntity ) {
+        String tableName = insertEntity.getTableName();
+        JSONObject jsonParams = insertEntity.getJsonParams();
+        if (tableNameToId.get(tableName) == null) {
+            tableNameToId.put(tableName, -1);
         }
-        System.out.println(endSql);
-        sql = String.valueOf(endSql);
-        Map<String,String> whereFields = new HashMap<>();
-        Object returnSqlObject = CCJSqlParserUtil.parse(sql);
+        LOGGER.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+              LOGGER.info(jsonParams.toString());
+            jsonParams.put("docType",tableName);
 
-
-        if(returnSqlObject.getClass() == Select.class){
-            SelectEntity selectEntity = new SelectEntity();
-            Select select = (Select) returnSqlObject;
-            SelectBody selectBody = select.getSelectBody();
-            PlainSelect plainSelect = (PlainSelect)selectBody;
-            TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
-            List<String> result = tablesNamesFinder.getTableList(select);
-            String tableName = result.get(0);
-            List selectFields = ((PlainSelect) selectBody).getSelectItems();
-            if(plainSelect.getWhere()  instanceof AndExpression){
-                AndExpression andExpression = (AndExpression) plainSelect.getWhere();
-                EqualsTo equalsTo = (EqualsTo) andExpression.getLeftExpression();
-                whereFields.put(((Column)equalsTo.getLeftExpression()).getColumnName(),String.valueOf(equalsTo.getRightExpression()));
-                equalsTo = (EqualsTo)andExpression.getRightExpression();
-                whereFields.put(((Column)equalsTo.getLeftExpression()).getColumnName(),String.valueOf(equalsTo.getRightExpression()));
-              //调用test2中进行测试
-                new Test2().select(tableName,selectFields,whereFields);
-                selectEntity.setTableName(tableName);
-                selectEntity.setWhereFields(whereFields);
-                selectEntity.setSelectFields(selectFields);
-                System.out.println("hahahahhaahah");
-                return  selectEntity;
-            }
-        }
-        if(returnSqlObject.getClass() == Insert.class){
-            InsertEntity insertEntity = new InsertEntity();
-            Insert insert = (Insert) returnSqlObject;
-            List<Column> list = insert.getColumns();
-            TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
-            List<String> result = tablesNamesFinder.getTableList(insert);
-
-            Iterator iteratorKey = list.iterator();
-            ExpressionList expressionList = (ExpressionList) insert.getItemsList();
-            int index = 0;
-
-            while(iteratorKey.hasNext()){
-                Column column = (Column) iteratorKey.next();
-                mapParams.put(column.getColumnName(),expressionList.getExpressions().get(index));
-            }
-            System.out.println(mapParams.toString());
-
-            insertEntity.setTableName(result.get(0));
-            insertEntity.setParams(mapParams);
-            return insertEntity;
-        }
-       return  "error";
+        LOGGER.info(jsonParams.toJSONString());
+            int docId = tableNameToId.get(tableName) + 1;
+            String idIndex = tableName + docId;
+            tableNameToId.put(tableName, tableNameToId.get(tableName) + 1);
+            stub.putStringState(idIndex,jsonParams.toJSONString());
+            return newSuccessResponse("数据插入成功");
     }
+   /* public   Response delete(ChaincodeStub stub, DeleteEntity deleteEntity){
+        SelectEntity selectEntity = new SelectEntity();
+        selectEntity.setTableName(deleteEntity.getTableName());
+        selectEntity.setWhereFields(deleteEntity.getWhereFields());
+        String bytes = Arrays.toString(select(stub, selectEntity).getPayload());
+        JSONArray jsonArray = JSONArray.parseArray(bytes);
+        String id = deleteEntity.getTableName()+jsonArray.getJSONObject(0).getString("id");
+        stub.delState(id);
+        return  newSuccessResponse("数据删除成功");
+    }*/
+    public void select2( SelectEntity selectEntity) {
+        System.out.println("测试点2");
+        String tableName = selectEntity.getTableName();
+        Map whereFields = selectEntity.getWhereFields();
+        List selectFields = selectEntity.getSelectFields();
+        String queryString ="{\"selector\":{\"docType\":\""+tableName+"\"";
+        Iterator<Map.Entry<Object, Object>> entries = whereFields.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<Object, Object> entry = entries.next();
+            queryString  = queryString +  ",\""+entry.getKey()+"\":\""+entry.getValue()+"\"";
+        }
+        if (selectFields!= null ){
+            if(selectFields.get(0)!="*") {
+                queryString = queryString + "}, \"fields\":[\"" + selectFields.get(0) + "\"";
+                for (int i = 1; i < selectFields.size(); i++) {
+                    queryString = queryString + ",\"" + selectFields.get(i) + "\"";
+                }
+                queryString = queryString + "]}";
+            }
+        } else {
+            queryString = queryString+"}";
+        }
+        System.out.println(queryString);
+
+    }
+    public String select( ChaincodeStub stub,SelectEntity selectEntity) {
+        System.out.println("测试点2");
+        String tableName = selectEntity.getTableName();
+        Map whereFields = selectEntity.getWhereFields();
+        List selectFields = selectEntity.getSelectFields();
+        String queryString ="{\"selector\":{\"docType\":\""+tableName+"\"";
+        Iterator<Map.Entry<Object, Object>> entries = whereFields.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<Object, Object> entry = entries.next();
+            queryString  = queryString +  ",\""+entry.getKey()+"\":\""+entry.getValue()+"\"";
+        }
+        if (selectFields!= null ){
+            if(selectFields.get(0)!="*") {
+                queryString = queryString + "}, \"fields\":[\"" + selectFields.get(0) + "\"";
+                for (int i = 1; i < selectFields.size(); i++) {
+                    queryString = queryString + ",\"" + selectFields.get(i) + "\"";
+                }
+                queryString = queryString + "]}";
+            }
+        } else {
+            queryString = queryString+"}";
+        }
+       String returnString = getQueryResultForQueryString(stub, queryString);
+       // return  newSuccessResponse("hahahahahahhahahahaha",returnString.getBytes());
+        LOGGER.info("最终returnString测试点"+returnString);
+        JSONArray jsonArray = JSONArray.parseArray(returnString);
+        LOGGER.info("jsonArray测试点"+jsonArray.toJSONString());
+        /*JSONArray returnArrray = new JSONArray();
+        for(int i =0;i<jsonArray.size();i++){
+            JSONObject jsonObject = (JSONObject) jsonArray.getJSONObject(i).remove("docType");
+            returnArrray.add(jsonObject);
+        }
+        LOGGER.info(returnArrray.toJSONString());*/
+        return  jsonArray.toJSONString();
+    }
+    /*public  Response update(ChaincodeStub stub, UpdateEntity updateEntity){
+        SelectEntity selectEntity = new SelectEntity();
+        selectEntity.setTableName(updateEntity.getTableName());
+        selectEntity.setWhereFields(updateEntity.getWhereFields());
+        String bytes = String.valueOf(select(stub,selectEntity).getPayload());
+        JSONArray jsonArray = JSONArray.parseArray(bytes);
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        Iterator<Map.Entry<Object, Object>> entries2 = updateEntity.getSetFields().entrySet().iterator();
+        while (entries2.hasNext()) {
+            Map.Entry<Object, Object> entry = entries2.next();
+            jsonObject.put(String.valueOf(entry.getKey()),entry.getValue());
+        }
+        String id = updateEntity.getTableName()+jsonObject.getString("id");
+        stub.putStringState(id,String.valueOf(jsonObject));
+         return  newSuccessResponse("success");
+    }*/
+    public String getQueryResultForQueryString(ChaincodeStub stub, String queryString) {
+        LOGGER.info("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+         QueryResultsIterator<KeyValue> queryResultsIterator = stub.getQueryResult(queryString);
+        LOGGER.info("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+         String returnString = constructQueryResponseFromIterator(queryResultsIterator);
+         return returnString;
+    }
+    private String constructQueryResponseFromIterator(QueryResultsIterator resultsIterator) {
+         StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("[");
+        LOGGER.info("ccccccccccccccccccccccccccccccc");
+         Iterator<KeyValue> iterator = resultsIterator.iterator();
+        LOGGER.info("dddddddddddddddddddddddddddddd");
+        while (iterator.hasNext()) {
+            KeyValue keyValue = iterator.next();
+            //stringBuffer.append(",");
+            LOGGER.info("fffffffffffffffffff"+keyValue.getStringValue());
+            stringBuffer.append(keyValue.getStringValue());
+            stringBuffer.append(",");
+        }
+        LOGGER.info("fffffffffffffffffff");
+        stringBuffer.deleteCharAt(stringBuffer.length()-1);
+        stringBuffer.append("]");
+        LOGGER.info("gggggggggggggggggggggg"+stringBuffer.toString());
+        return stringBuffer.toString();
+    }
+    public static void main(String[] args) {
+        LOGGER.info(">>> Chaincode starting, args = {}", Arrays.toString(args));
+        new BankMasterChaincode().start(args);
+    }
+}
 
    /* public Response insert(ChaincodeStub stub, String tableName, Map map) {
 
@@ -199,103 +283,6 @@ public class BankMasterChaincode extends   ChaincodeBase {
         }
         return newErrorResponse(String.format("不存在的智能合约方法名: %s"));
     }*/
-    public Response insert(ChaincodeStub stub, InsertEntity insertEntity ) {
-        String tableName = insertEntity.getTableName();
-        Map params = insertEntity.getParams();
-        if (tableNameToId.get(tableName) == null) {
-            tableNameToId.put(tableName, -1);
-        }
-
-            params.put("tableName",tableName);
-            String jsonParams = JsonUtils.object2Json(params);
-            int docId = tableNameToId.get(tableName) + 1;
-            String idIndex = tableName + docId;
-            tableNameToId.put(tableName, tableNameToId.get(tableName) + 1);
-            stub.putStringState(idIndex,jsonParams);
-            return newSuccessResponse("数据插入成功");
-    }
-    public   Response delete(ChaincodeStub stub, DeleteEntity deleteEntity){
-        SelectEntity selectEntity = new SelectEntity();
-        selectEntity.setTableName(deleteEntity.getTableName());
-        selectEntity.setWhereFields(deleteEntity.getWhereFields());
-        String bytes = Arrays.toString(select(stub, selectEntity).getPayload());
-        JSONArray jsonArray = JSONArray.parseArray(bytes);
-        String id = deleteEntity.getTableName()+jsonArray.getJSONObject(0).getString("id");
-        stub.delState(id);
-        return  newSuccessResponse("数据删除成功");
-    }
-    public Response select( ChaincodeStub stub,SelectEntity selectEntity) {
-        System.out.println("测试点2");
-        String tableName = selectEntity.getTableName();
-        Map whereFields = selectEntity.getWhereFields();
-        List selectFields = selectEntity.getSelectFields();
-        String queryString ="{\"selector\":{\"docType\":\""+tableName+"\"";
-        Iterator<Map.Entry<Object, Object>> entries = whereFields.entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<Object, Object> entry = entries.next();
-            queryString  = queryString +  ",\""+entry.getKey()+"\":\""+entry.getValue()+"\"";
-        }
-        if (selectFields!= null ){
-            if(selectFields.get(0)!="*") {
-                queryString = queryString + "}, \"Fields\":[" + selectFields.get(0) + "\"";
-                for (int i = 1; i < selectFields.size(); i++) {
-                    queryString = queryString + ",\"" + selectFields.get(i) + "\"";
-                }
-                queryString = queryString + "]}";
-            }
-        } else {
-            queryString = queryString+"}";
-        }
-        byte[] bytes = getQueryResultForQueryString(stub, queryString);
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(bytes));
-        JSONArray returnArrray = new JSONArray();
-        for(int i =0;i<jsonArray.size();i++){
-            JSONObject jsonObject = (JSONObject) jsonArray.getJSONObject(i).remove("docType");
-            returnArrray.add(jsonObject);
-        }
-        return newSuccessResponse("success",returnArrray.toJSONString().getBytes());
-    }
-    public  Response update(ChaincodeStub stub, UpdateEntity updateEntity){
-        SelectEntity selectEntity = new SelectEntity();
-        selectEntity.setTableName(updateEntity.getTableName());
-        selectEntity.setWhereFields(updateEntity.getWhereFields());
-        String bytes = String.valueOf(select(stub,selectEntity).getPayload());
-        JSONArray jsonArray = JSONArray.parseArray(bytes);
-        JSONObject jsonObject = jsonArray.getJSONObject(0);
-        Iterator<Map.Entry<Object, Object>> entries2 = updateEntity.getSetFields().entrySet().iterator();
-        while (entries2.hasNext()) {
-            Map.Entry<Object, Object> entry = entries2.next();
-            jsonObject.put(String.valueOf(entry.getKey()),entry.getValue());
-        }
-        String id = updateEntity.getTableName()+jsonObject.getString("id");
-        stub.putStringState(id,String.valueOf(jsonObject));
-         return  newSuccessResponse("success");
-    }
-    public byte[] getQueryResultForQueryString(ChaincodeStub stub, String queryString) {
-         QueryResultsIterator<KeyValue> queryResultsIterator = stub.getQueryResult(queryString);
-         byte[] bytes = constructQueryResponseFromIterator(queryResultsIterator);
-         return bytes;
-    }
-    private byte[] constructQueryResponseFromIterator(QueryResultsIterator resultsIterator) {
-         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("[");
-         Iterator<KeyValue> iterator = resultsIterator.iterator();
-        while (iterator.hasNext()) {
-            KeyValue keyValue = iterator.next();
-            //stringBuffer.append(",");
-            stringBuffer.append(keyValue.getValue());
-            stringBuffer.append(",");
-        }
-        stringBuffer.deleteCharAt(stringBuffer.length()-1);
-        stringBuffer.append("]");
-        System.out.println(stringBuffer.toString());
-        return stringBuffer.toString().getBytes();
-    }
-    public static void main(String[] args) {
-
-        new BankMasterChaincode().start(args);
-    }
-}
   /*  func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
 
         fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
