@@ -143,6 +143,9 @@ public class SqlUtils {
                 equalsTo = (EqualsTo)andExpression.getRightExpression();
                 whereFields.put(((Column)equalsTo.getLeftExpression()).getColumnName(),String.valueOf(equalsTo.getRightExpression()));
                 System.out.println(whereFields.toString());
+                deleteEntity.setWhereFields(whereFields);
+                deleteEntity.setTableName(delete.getTable().getName());
+                return deleteEntity;
             } else if(delete.getWhere() instanceof  Expression){
                 Expression expression = delete.getWhere();
              //   ExpressionDeParser expressionDeParser = new ExpressionDeParser();

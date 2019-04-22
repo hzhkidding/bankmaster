@@ -53,12 +53,17 @@ public class BankMasterChaincode extends   ChaincodeBase {
     public Response invoke(ChaincodeStub stub) {
         String function = stub.getFunction();
         List<String> args = stub.getParameters();
-
         String sql = "insert into table_name (name,id,age) VALUES (?, ?, 主机)";
         String sql2 = "select id age from table_name where id=哈哈 and name =3";
         String params =  "{\"1\":\"3\",\"2\":\"哈哈\"}";
-        args.add(0,sql2);
-        args.add(1,params);
+        if(args.get(0) == "1"){
+            args.add(0,sql);
+            args.add(1,params);
+        }else{
+            args.add(0,sql2);
+            args.add(1,params);
+        }
+
         String reponse = null;
             try {
                 Object object = SqlUtils.sqlParser(args.get(0),args.get(1));
@@ -84,33 +89,6 @@ public class BankMasterChaincode extends   ChaincodeBase {
         return  newSuccessResponse("哈哈哈哈",reponse.getBytes( StandardCharsets.UTF_8));
 
     }
-    @Test
-    public  void test2() throws JSQLParserException {
-         /* String sql = "insert into table_name (name,id,age) VALUES (?, ?, 主机)";*/
-        String sql1 = "delete  from table_name where id=? and name = ?";
-        String sql2 = "select id age from table_name where id=哈哈 ";
-        String sql3 = "select id  from table_name where id=哈哈33 and name=2";
-        String params =  "{\"1\":\"3\",\"2\":\"哈哈\"}";
-         test(sql1,params);
-        //test(sql2,params);
-    }
-
-    public void test(String sql,String params) throws JSQLParserException {
-        Object object = SqlUtils.sqlParser(sql,params);
-        if(object.getClass() == InsertEntity.class){
-            InsertEntity insertEntity = (InsertEntity) object;
-            System.out.println(insertEntity.getJsonParams().toJSONString());
-            //insert(stub,insertEntity);
-        } else  if(object.getClass() == SelectEntity.class){
-            SelectEntity selectEntity = (SelectEntity) object;
-            System.out.println(selectEntity.getWhereFields().toString());
-            System.out.println(selectEntity.getSelectFields().toString());
-           // select2(selectEntity);
-        } else  if(object.getClass() == DeleteEntity.class){
-            DeleteEntity deleteEntity = (DeleteEntity) object;
-            System.out.println(deleteEntity.getWhereFields().toString());
-        }
-    }
 
     public Response insert(ChaincodeStub stub, InsertEntity insertEntity ) {
         String tableName = insertEntity.getTableName();
@@ -127,31 +105,7 @@ public class BankMasterChaincode extends   ChaincodeBase {
             stub.putStringState(idIndex,jsonParams.toJSONString());
             return newSuccessResponse("数据插入成功");
     }
-    public void select2( SelectEntity selectEntity) {
-        System.out.println("测试点2");
-        String tableName = selectEntity.getTableName();
-        Map whereFields = selectEntity.getWhereFields();
-        List selectFields = selectEntity.getSelectFields();
-        String queryString ="{\"selector\":{\"docType\":\""+tableName+"\"";
-        Iterator<Map.Entry<Object, Object>> entries = whereFields.entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<Object, Object> entry = entries.next();
-            queryString  = queryString +  ",\""+entry.getKey()+"\":\""+entry.getValue()+"\"";
-        }
-        if (selectFields!= null ){
-            if(selectFields.get(0)!="*") {
-                queryString = queryString + "}, \"fields\":[\"" + selectFields.get(0) + "\"";
-                for (int i = 1; i < selectFields.size(); i++) {
-                    queryString = queryString + ",\"" + selectFields.get(i) + "\"";
-                }
-                queryString = queryString + "]}";
-            }
-        } else {
-            queryString = queryString+"}";
-        }
-        System.out.println(queryString);
 
-    }
     public String select( ChaincodeStub stub,SelectEntity selectEntity) {
         System.out.println("测试点2");
         String tableName = selectEntity.getTableName();
@@ -206,6 +160,7 @@ public class BankMasterChaincode extends   ChaincodeBase {
         stub.putStringState(id,jsonObject.toJSONString());
          return  newSuccessResponse("update success");
     }
+
     public  Response delete(ChaincodeStub stub, DeleteEntity deleteEntity){
         SelectEntity selectEntity = new SelectEntity();
         List<String> list = new LinkedList();
@@ -219,6 +174,92 @@ public class BankMasterChaincode extends   ChaincodeBase {
         String id = deleteEntity.getTableName()+jsonObject.getString("id");
         stub.delState(id);
         return  newSuccessResponse("delete success");
+    }
+
+    @Test
+    public  void test2() throws JSQLParserException {
+        /* String sql = "insert into table_name (name,id,age) VALUES (?, ?, 主机)";*/
+        String sql1 = "delete  from table_name where id=? and name = ?";
+        String sql2 = "select id age from table_name where id=哈哈 ";
+        String sql3 = "select id  from table_name where id=哈哈33 and name=2";
+        String params =  "{\"1\":\"3\",\"2\":\"哈哈\"}";
+        test(sql1,params);
+        //test(sql2,params);
+    }
+
+    public void test(String sql,String params) throws JSQLParserException {
+        Object object = SqlUtils.sqlParser(sql,params);
+        if(object.getClass() == InsertEntity.class){
+            InsertEntity insertEntity = (InsertEntity) object;
+            System.out.println(insertEntity.getJsonParams().toJSONString());
+            //insert(stub,insertEntity);
+        } else  if(object.getClass() == SelectEntity.class){
+            SelectEntity selectEntity = (SelectEntity) object;
+            System.out.println(selectEntity.getWhereFields().toString());
+            System.out.println(selectEntity.getSelectFields().toString());
+            // select2(selectEntity);
+        } else  if(object.getClass() == DeleteEntity.class){
+            DeleteEntity deleteEntity = (DeleteEntity) object;
+            System.out.println(deleteEntity.getWhereFields().toString()+"hahahha");
+            delete2(deleteEntity);
+        }
+    }
+
+    public String select2( SelectEntity selectEntity) {
+        System.out.println("测试点2");
+        String tableName = selectEntity.getTableName();
+        Map whereFields = selectEntity.getWhereFields();
+        List selectFields = selectEntity.getSelectFields();
+        String queryString ="{\"selector\":{\"docType\":\""+tableName+"\"";
+        Iterator<Map.Entry<Object, Object>> entries = whereFields.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<Object, Object> entry = entries.next();
+            queryString  = queryString +  ",\""+entry.getKey()+"\":\""+entry.getValue()+"\"";
+        }
+        if (selectFields!= null ){
+            if(selectFields.get(0)!="*") {
+                queryString = queryString + "}, \"fields\":[\"" + selectFields.get(0) + "\"";
+                for (int i = 1; i < selectFields.size(); i++) {
+                    queryString = queryString + ",\"" + selectFields.get(i) + "\"";
+                }
+                queryString = queryString + "]}";
+            }
+        } else {
+            queryString = queryString+"}";
+        }
+        System.out.println(queryString);
+        return queryString;
+
+    }
+    public  void delete2(DeleteEntity deleteEntity){
+        SelectEntity selectEntity = new SelectEntity();
+        List<String> list = new LinkedList();
+        list.add("id");
+        selectEntity.setTableName(deleteEntity.getTableName());
+        selectEntity.setWhereFields(deleteEntity.getWhereFields());
+        selectEntity.setSelectFields(list);
+        String returnString = select2(selectEntity);
+        JSONArray jsonArray = JSONArray.parseArray(returnString);
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        String id = deleteEntity.getTableName()+jsonObject.getString("id");
+        // stub.delState(id);
+
+    }
+    public  Response update2(UpdateEntity updateEntity){
+        SelectEntity selectEntity = new SelectEntity();
+        selectEntity.setTableName(updateEntity.getTableName());
+        selectEntity.setWhereFields(updateEntity.getWhereFields());
+        String returnString = String.valueOf(select2(selectEntity));
+        JSONArray jsonArray = JSONArray.parseArray(returnString);
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        Iterator<Map.Entry<Object, Object>> entries2 = updateEntity.getSetFields().entrySet().iterator();
+        while (entries2.hasNext()) {
+            Map.Entry<Object, Object> entry = entries2.next();
+            jsonObject.put(String.valueOf(entry.getKey()),entry.getValue());
+        }
+        String id = updateEntity.getTableName()+jsonObject.getString("id");
+        //stub.putStringState(id,jsonObject.toJSONString());
+        return  newSuccessResponse("update success");
     }
     public String getQueryResultForQueryString(ChaincodeStub stub, String queryString) {
          LOGGER.info("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
