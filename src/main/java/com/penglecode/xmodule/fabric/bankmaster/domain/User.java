@@ -1,4 +1,4 @@
-package com.penglecode.xmodule.fabric.bankmaster.chaincode;
+package com.penglecode.xmodule.fabric.bankmaster.domain;
 
 import java.util.Date;
 
