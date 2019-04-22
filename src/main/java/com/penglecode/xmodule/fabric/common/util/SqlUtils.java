@@ -1,21 +1,25 @@
 package com.penglecode.xmodule.fabric.common.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.penglecode.xmodule.fabric.bankmaster.Entity.DeleteEntity;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.InsertEntity;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.SelectEntity;
 import com.penglecode.xmodule.fabric.bankmaster.Entity.UpdateEntity;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
+import net.sf.jsqlparser.util.deparser.ExpressionDeParser;
 
 import java.util.*;
 
@@ -37,11 +41,12 @@ public class SqlUtils {
         }
         System.out.println(endSql);
         sql = String.valueOf(endSql);
-        Map<String,String> whereFields = new HashMap<>();
+
         Object returnSqlObject = CCJSqlParserUtil.parse(sql);
 
-
+      // Select
         if(returnSqlObject.getClass() == Select.class){
+            Map<String,String> whereFields = new HashMap<>();
             SelectEntity selectEntity = new SelectEntity();
             Select select = (Select) returnSqlObject;
             SelectBody selectBody = select.getSelectBody();
@@ -57,6 +62,7 @@ public class SqlUtils {
             }
             System.out.println(selectFields.get(0));
             if(plainSelect.getWhere()  instanceof AndExpression){
+
                 AndExpression andExpression = (AndExpression) plainSelect.getWhere();
                 EqualsTo equalsTo = (EqualsTo) andExpression.getLeftExpression();
                 whereFields.put(((Column)equalsTo.getLeftExpression()).getColumnName(),String.valueOf(equalsTo.getRightExpression()));
@@ -66,11 +72,27 @@ public class SqlUtils {
                 // new Test2().select(tableName,selectFields,whereFields);
                 selectEntity.setTableName(tableName);
                 selectEntity.setWhereFields(whereFields);
-                selectEntity.setSelectFields(selectFields);
-                System.out.println("hahahahhaahah");
-                return  selectEntity;
+
+            }else  if(plainSelect.getWhere() instanceof Expression) {
+                Expression expression = plainSelect.getWhere();
+                ExpressionDeParser expressionDeParser = new ExpressionDeParser();
+                plainSelect.getWhere().accept(expressionDeParser);
+                EqualsTo equalsTo = (EqualsTo)expression;
+                whereFields.put(((Column)equalsTo.getLeftExpression()).getColumnName(), String.valueOf(equalsTo.getRightExpression()));
+                selectEntity.setWhereFields(whereFields);
+                selectEntity.setTableName(tableName);
+                System.out.println(tableName);
+                System.out.println("Field:"+((Column)equalsTo.getLeftExpression()).getColumnName());
+                System.out.println("equal:"+equalsTo.getRightExpression());
+
             }
+            selectEntity.setSelectFields(selectFields);
+            return  selectEntity;
         }
+
+
+
+        // Insert
         if(returnSqlObject.getClass() == Insert.class){
             InsertEntity insertEntity = new InsertEntity();
             Insert insert = (Insert) returnSqlObject;
@@ -86,7 +108,6 @@ public class SqlUtils {
                 Column column = (Column) iteratorKey.next();
                 System.out.println(expressionList.getExpressions().get(index));
                 jsonObject.put(column.getColumnName(),String.valueOf(expressionList.getExpressions().get(index)));
-
                 //mapParams.put(column.getColumnName(),expressionList.getExpressions().get(index));
                 index++;
             }
@@ -95,11 +116,45 @@ public class SqlUtils {
             insertEntity.setTableName(result.get(0));
             insertEntity.setJsonParams(jsonObject);
             return insertEntity;
-        }if(returnSqlObject.getClass() == Update.class){
+        }
+
+
+        // UPDATE
+        if(returnSqlObject.getClass() == Update.class){
             UpdateEntity updateEntity = new UpdateEntity();
             Update update = (Update) returnSqlObject;
             List list = update.getColumns();
 
+        }
+
+
+        //delete
+        if(returnSqlObject.getClass() == Delete.class){
+            Map<String,String> whereFields  = new HashMap<>();
+            DeleteEntity deleteEntity = new DeleteEntity();
+            Delete delete = (Delete) returnSqlObject;
+            TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
+            List<String> result = tablesNamesFinder.getTableList(delete);
+            deleteEntity.setTableName(result.get(0));
+            if(delete.getWhere() instanceof  AndExpression){
+                AndExpression andExpression = (AndExpression) delete.getWhere();
+                EqualsTo equalsTo = (EqualsTo) andExpression.getLeftExpression();
+                whereFields.put(((Column)equalsTo.getLeftExpression()).getColumnName(),String.valueOf(equalsTo.getRightExpression()));
+                equalsTo = (EqualsTo)andExpression.getRightExpression();
+                whereFields.put(((Column)equalsTo.getLeftExpression()).getColumnName(),String.valueOf(equalsTo.getRightExpression()));
+                System.out.println(whereFields.toString());
+            } else if(delete.getWhere() instanceof  Expression){
+                Expression expression = delete.getWhere();
+             //   ExpressionDeParser expressionDeParser = new ExpressionDeParser();
+                EqualsTo equalsTo = (EqualsTo)expression;
+                whereFields.put(((Column)equalsTo.getLeftExpression()).getColumnName(), String.valueOf(equalsTo.getRightExpression()));
+                deleteEntity.setWhereFields(whereFields);
+                deleteEntity.setTableName(delete.getTable().getName());
+                System.out.println(delete.getTable().getName());
+                System.out.println("Field:"+((Column)equalsTo.getLeftExpression()).getColumnName());
+                System.out.println("equal:"+equalsTo.getRightExpression());
+                return  deleteEntity;
+            }
         }
         return  "error";
     }

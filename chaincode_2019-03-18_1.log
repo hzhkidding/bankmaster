@@ -1,0 +1,19 @@
+2019-03-18 11:31:53,199 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processEnvironmentOptions(ChaincodeBase.java:228)] <<<<<<<<<<<<<Enviromental options>>>>>>>>>>>>
+2019-03-18 11:31:53,202 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processEnvironmentOptions(ChaincodeBase.java:229)] CORE_CHAINCODE_ID_NAME: null
+2019-03-18 11:31:53,202 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processEnvironmentOptions(ChaincodeBase.java:230)] CORE_PEER_ADDRESS: 127.0.0.1
+2019-03-18 11:31:53,203 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processEnvironmentOptions(ChaincodeBase.java:231)] CORE_PEER_TLS_ENABLED: false
+2019-03-18 11:31:53,203 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processEnvironmentOptions(ChaincodeBase.java:232)] CORE_PEER_TLS_ROOTCERT_FILEnull
+2019-03-18 11:31:53,203 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processEnvironmentOptions(ChaincodeBase.java:233)] CORE_TLS_CLIENT_KEY_PATHnull
+2019-03-18 11:31:53,204 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processEnvironmentOptions(ChaincodeBase.java:234)] CORE_TLS_CLIENT_CERT_PATHnull
+2019-03-18 11:31:53,211 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processCommandLineOptions(ChaincodeBase.java:198)] <<<<<<<<<<<<<CommandLine options>>>>>>>>>>>>
+2019-03-18 11:31:53,211 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processCommandLineOptions(ChaincodeBase.java:199)] CORE_CHAINCODE_ID_NAME: null
+2019-03-18 11:31:53,211 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processCommandLineOptions(ChaincodeBase.java:200)] CORE_PEER_ADDRESS: 127.0.0.1:7051
+2019-03-18 11:31:53,211 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processCommandLineOptions(ChaincodeBase.java:201)] CORE_PEER_TLS_ENABLED: false
+2019-03-18 11:31:53,212 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processCommandLineOptions(ChaincodeBase.java:202)] CORE_PEER_TLS_ROOTCERT_FILEnull
+2019-03-18 11:31:53,212 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processCommandLineOptions(ChaincodeBase.java:203)] CORE_TLS_CLIENT_KEY_PATHnull
+2019-03-18 11:31:53,212 [INFO ] [org.hyperledger.fabric.shim.ChaincodeBase.processCommandLineOptions(ChaincodeBase.java:204)] CORE_TLS_CLIENT_CERT_PATHnull
+2019-03-18 11:31:53,238 [ERROR] [org.hyperledger.fabric.shim.ChaincodeBase.start(ChaincodeBase.java:92)] Chaincode could not start
+java.lang.IllegalArgumentException: The chaincode id must be specified using either the -i or --i command line options or the CORE_CHAINCODE_ID_NAME environment variable.
+	at org.hyperledger.fabric.shim.ChaincodeBase.validateOptions(ChaincodeBase.java:151) ~[fabric-chaincode-shim-1.3.0.jar:?]
+	at org.hyperledger.fabric.shim.ChaincodeBase.start(ChaincodeBase.java:86) [fabric-chaincode-shim-1.3.0.jar:?]
+	at com.penglecode.xmodule.fabric.bankmaster.chaincode.BankMasterChaincode.main(BankMasterChaincode.java:300) [classes/:?]

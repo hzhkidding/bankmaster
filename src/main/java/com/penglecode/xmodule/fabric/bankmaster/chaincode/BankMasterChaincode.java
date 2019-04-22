@@ -60,26 +60,20 @@ public class BankMasterChaincode extends   ChaincodeBase {
         args.add(0,sql2);
         args.add(1,params);
         String reponse = null;
-
-
             try {
-
                 Object object = SqlUtils.sqlParser(args.get(0),args.get(1));
-
                if(object.getClass() == InsertEntity.class){
-
                    InsertEntity insertEntity = (InsertEntity) object;
                    insert(stub,insertEntity);
                } else  if(object.getClass() == SelectEntity.class){
                    SelectEntity selectEntity = (SelectEntity) object;
                   reponse =  select(stub,selectEntity);
-
                }else  if(object.getClass() == DeleteEntity.class) {
                    DeleteEntity deleteEntity = (DeleteEntity)object;
-                 //  delete(stub, deleteEntity);
+                   delete(stub, deleteEntity);
                }else  if(object.getClass() == UpdateEntity.class) {
                    UpdateEntity updateEntity = (UpdateEntity) object;
-                  // update(stub, updateEntity);
+                   update(stub, updateEntity);
                }
             } catch (JSQLParserException e) {
                 e.printStackTrace();
@@ -90,26 +84,33 @@ public class BankMasterChaincode extends   ChaincodeBase {
         return  newSuccessResponse("哈哈哈哈",reponse.getBytes( StandardCharsets.UTF_8));
 
     }
-   @Test
-    public void test() throws JSQLParserException {
-        String sql = "insert into table_name (name,id,age) VALUES (?, ?, 主机)";
-        String sql2 = "select id age from table_name where id=哈哈 and name =3";
+    @Test
+    public  void test2() throws JSQLParserException {
+         /* String sql = "insert into table_name (name,id,age) VALUES (?, ?, 主机)";*/
+        String sql1 = "delete  from table_name where id=? and name = ?";
+        String sql2 = "select id age from table_name where id=哈哈 ";
+        String sql3 = "select id  from table_name where id=哈哈33 and name=2";
         String params =  "{\"1\":\"3\",\"2\":\"哈哈\"}";
-        Object object = SqlUtils.sqlParser(sql,params);
+         test(sql1,params);
+        //test(sql2,params);
+    }
 
+    public void test(String sql,String params) throws JSQLParserException {
+        Object object = SqlUtils.sqlParser(sql,params);
         if(object.getClass() == InsertEntity.class){
             InsertEntity insertEntity = (InsertEntity) object;
             System.out.println(insertEntity.getJsonParams().toJSONString());
-            System.out.println(insertEntity.getTableName()+"sadfsadfasdfds");
             //insert(stub,insertEntity);
         } else  if(object.getClass() == SelectEntity.class){
             SelectEntity selectEntity = (SelectEntity) object;
-            System.out.println(selectEntity.getTableName()+"dsfadsfadsfasd");
-            select2(selectEntity);
+            System.out.println(selectEntity.getWhereFields().toString());
+            System.out.println(selectEntity.getSelectFields().toString());
+           // select2(selectEntity);
+        } else  if(object.getClass() == DeleteEntity.class){
+            DeleteEntity deleteEntity = (DeleteEntity) object;
+            System.out.println(deleteEntity.getWhereFields().toString());
         }
     }
-
-
 
     public Response insert(ChaincodeStub stub, InsertEntity insertEntity ) {
         String tableName = insertEntity.getTableName();
@@ -117,27 +118,15 @@ public class BankMasterChaincode extends   ChaincodeBase {
         if (tableNameToId.get(tableName) == null) {
             tableNameToId.put(tableName, -1);
         }
-        LOGGER.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
               LOGGER.info(jsonParams.toString());
             jsonParams.put("docType",tableName);
-
-        LOGGER.info(jsonParams.toJSONString());
+           LOGGER.info(jsonParams.toJSONString());
             int docId = tableNameToId.get(tableName) + 1;
             String idIndex = tableName + docId;
             tableNameToId.put(tableName, tableNameToId.get(tableName) + 1);
             stub.putStringState(idIndex,jsonParams.toJSONString());
             return newSuccessResponse("数据插入成功");
     }
-   /* public   Response delete(ChaincodeStub stub, DeleteEntity deleteEntity){
-        SelectEntity selectEntity = new SelectEntity();
-        selectEntity.setTableName(deleteEntity.getTableName());
-        selectEntity.setWhereFields(deleteEntity.getWhereFields());
-        String bytes = Arrays.toString(select(stub, selectEntity).getPayload());
-        JSONArray jsonArray = JSONArray.parseArray(bytes);
-        String id = deleteEntity.getTableName()+jsonArray.getJSONObject(0).getString("id");
-        stub.delState(id);
-        return  newSuccessResponse("数据删除成功");
-    }*/
     public void select2( SelectEntity selectEntity) {
         System.out.println("测试点2");
         String tableName = selectEntity.getTableName();
@@ -190,20 +179,23 @@ public class BankMasterChaincode extends   ChaincodeBase {
         LOGGER.info("最终returnString测试点"+returnString);
         JSONArray jsonArray = JSONArray.parseArray(returnString);
         LOGGER.info("jsonArray测试点"+jsonArray.toJSONString());
-        /*JSONArray returnArrray = new JSONArray();
-        for(int i =0;i<jsonArray.size();i++){
-            JSONObject jsonObject = (JSONObject) jsonArray.getJSONObject(i).remove("docType");
-            returnArrray.add(jsonObject);
+        if(selectFields.get(0)=="*") {
+            JSONArray returnArrray = new JSONArray();
+            for(int i =0;i<jsonArray.size();i++){
+                JSONObject jsonObject = (JSONObject) jsonArray.getJSONObject(i).remove("docType");
+                returnArrray.add(jsonObject);
+            }
+            LOGGER.info(returnArrray.toJSONString());
+            return  returnArrray.toJSONString();
         }
-        LOGGER.info(returnArrray.toJSONString());*/
         return  jsonArray.toJSONString();
     }
-    /*public  Response update(ChaincodeStub stub, UpdateEntity updateEntity){
+    public  Response update(ChaincodeStub stub, UpdateEntity updateEntity){
         SelectEntity selectEntity = new SelectEntity();
         selectEntity.setTableName(updateEntity.getTableName());
         selectEntity.setWhereFields(updateEntity.getWhereFields());
-        String bytes = String.valueOf(select(stub,selectEntity).getPayload());
-        JSONArray jsonArray = JSONArray.parseArray(bytes);
+        String returnString = String.valueOf(select(stub,selectEntity));
+        JSONArray jsonArray = JSONArray.parseArray(returnString);
         JSONObject jsonObject = jsonArray.getJSONObject(0);
         Iterator<Map.Entry<Object, Object>> entries2 = updateEntity.getSetFields().entrySet().iterator();
         while (entries2.hasNext()) {
@@ -211,13 +203,27 @@ public class BankMasterChaincode extends   ChaincodeBase {
             jsonObject.put(String.valueOf(entry.getKey()),entry.getValue());
         }
         String id = updateEntity.getTableName()+jsonObject.getString("id");
-        stub.putStringState(id,String.valueOf(jsonObject));
-         return  newSuccessResponse("success");
-    }*/
+        stub.putStringState(id,jsonObject.toJSONString());
+         return  newSuccessResponse("update success");
+    }
+    public  Response delete(ChaincodeStub stub, DeleteEntity deleteEntity){
+        SelectEntity selectEntity = new SelectEntity();
+        List<String> list = new LinkedList();
+        list.add("id");
+        selectEntity.setTableName(deleteEntity.getTableName());
+        selectEntity.setWhereFields(deleteEntity.getWhereFields());
+        selectEntity.setSelectFields(list);
+        String returnString = String.valueOf(select(stub,selectEntity));
+        JSONArray jsonArray = JSONArray.parseArray(returnString);
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        String id = deleteEntity.getTableName()+jsonObject.getString("id");
+        stub.delState(id);
+        return  newSuccessResponse("delete success");
+    }
     public String getQueryResultForQueryString(ChaincodeStub stub, String queryString) {
-        LOGGER.info("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+         LOGGER.info("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
          QueryResultsIterator<KeyValue> queryResultsIterator = stub.getQueryResult(queryString);
-        LOGGER.info("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+         LOGGER.info("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
          String returnString = constructQueryResponseFromIterator(queryResultsIterator);
          return returnString;
     }
