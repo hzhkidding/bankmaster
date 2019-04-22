@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3349fc5-f8a0-4b6b-b21c-3da8d749bcf8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/bankmaster/chaincode/BankMasterChaincode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/bankmaster/chaincode/BankMasterChaincode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/common/util/SqlUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/common/util/SqlUtils.java" afterDir="false" />
     </list>
@@ -19,7 +17,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3784">
+            <state relative-caret-position="508">
               <caret line="172" selection-start-line="172" selection-end-line="172" />
             </state>
           </provider>
@@ -28,8 +26,35 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/common/util/SqlUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="693">
-              <caret line="149" column="59" selection-start-line="149" selection-start-column="59" selection-end-line="149" selection-end-column="59" />
+            <state relative-caret-position="-203">
+              <caret line="141" column="80" selection-start-line="141" selection-start-column="80" selection-end-line="141" selection-end-column="80" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/expression/operators/conditional/AndExpression.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="137">
+              <caret line="17" column="32" selection-start-line="17" selection-start-column="25" selection-end-line="17" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/expression/Expression.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="110">
+              <caret line="13" column="21" selection-start-line="13" selection-start-column="21" selection-end-line="13" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/expression/StringValue.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-41">
+              <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -37,7 +62,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/statement/update/Update.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="22">
+            <state relative-caret-position="220">
               <caret line="31" column="40" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="40" />
             </state>
           </provider>
@@ -46,7 +71,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="jar://C:/Program Files/Java/jdk1.8.0_171/src.zip!/java/lang/Object.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
+            <state relative-caret-position="4620">
               <caret line="237" selection-start-line="237" selection-end-line="237" />
               <folding>
                 <element signature="e#10065#10066#0" expanded="true" />
@@ -70,8 +95,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/bankmaster/chaincode/BankMasterChaincode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-88">
-              <caret line="223" column="8" selection-start-line="223" selection-start-column="8" selection-end-line="223" selection-end-column="8" />
+            <state relative-caret-position="242">
+              <caret line="187" column="75" selection-start-line="187" selection-start-column="75" selection-end-line="187" selection-end-column="75" />
             </state>
           </provider>
         </entry>
@@ -93,8 +118,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/common/util/SqlUtils.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/bankmaster/chaincode/BankMasterChaincode.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/common/util/SqlUtils.java" />
       </list>
     </option>
   </component>
@@ -194,7 +219,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555682847779" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555937733537" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -266,48 +291,50 @@
       <updated>1555671680892</updated>
       <workItem from="1555671696648" duration="2838000" />
       <workItem from="1555674624616" duration="3427000" />
+      <workItem from="1555917381587" duration="8769000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 36m 21s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 23m 09s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 37m 15s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 24m 33s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 37m 35s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 26m 01s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 45m 53s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 37m 04s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 46m 49s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 38m 16s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 47m 27s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 38m 38s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 51m 19s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 39m 07s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 54m 05s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 52m 46s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 55m 48s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 53m 53s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="BankMasterChaincode_test2 - 2019.04.19 at 19h 56m 26s.xml">
+    <history-entry file="BankMasterChaincode_test2 - 2019.04.22 at 20h 54m 32s.xml">
       <configuration name="BankMasterChaincode.test2" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6265000" />
+    <option name="totallyTimeSpent" value="15034000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25340393" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25718608" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="JRebel" order="3" side_tool="true" />
@@ -318,7 +345,7 @@
       <window_info id="Learn" order="8" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.13256955" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.21931261" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -327,7 +354,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Docker" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="11" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.101472996" />
       <window_info anchor="bottom" id="Database Changes" order="12" />
       <window_info anchor="bottom" id="Version Control" order="13" />
       <window_info anchor="bottom" id="JRebel Executor" order="14" />
@@ -347,10 +374,21 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/statement/update/Update.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3784">
-          <caret line="172" selection-start-line="172" selection-end-line="172" />
+        <state relative-caret-position="220">
+          <caret line="31" column="40" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_171/src.zip!/java/lang/Object.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4620">
+          <caret line="237" selection-start-line="237" selection-end-line="237" />
+          <folding>
+            <element signature="e#10065#10066#0" expanded="true" />
+            <element signature="e#10148#10149#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -370,35 +408,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_171/src.zip!/java/lang/Object.java">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="237" selection-start-line="237" selection-end-line="237" />
-          <folding>
-            <element signature="e#10065#10066#0" expanded="true" />
-            <element signature="e#10148#10149#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="508">
+          <caret line="172" selection-start-line="172" selection-end-line="172" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/statement/update/Update.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/expression/operators/conditional/AndExpression.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="31" column="40" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="40" />
+        <state relative-caret-position="137">
+          <caret line="17" column="32" selection-start-line="17" selection-start-column="25" selection-end-line="17" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/expression/Expression.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="13" column="21" selection-start-line="13" selection-start-column="21" selection-end-line="13" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/2.0/jsqlparser-2.0-sources.jar!/net/sf/jsqlparser/expression/StringValue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-41">
+          <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/bankmaster/chaincode/BankMasterChaincode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-88">
-          <caret line="223" column="8" selection-start-line="223" selection-start-column="8" selection-end-line="223" selection-end-column="8" />
+        <state relative-caret-position="242">
+          <caret line="187" column="75" selection-start-line="187" selection-start-column="75" selection-end-line="187" selection-end-column="75" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/penglecode/xmodule/fabric/common/util/SqlUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="149" column="59" selection-start-line="149" selection-start-column="59" selection-end-line="149" selection-end-column="59" />
+        <state relative-caret-position="-203">
+          <caret line="141" column="80" selection-start-line="141" selection-start-column="80" selection-end-line="141" selection-end-column="80" />
         </state>
       </provider>
     </entry>
